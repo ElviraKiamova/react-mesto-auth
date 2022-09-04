@@ -10,6 +10,10 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 import EditProfilePopup from "./EditProfilePopup.js";
 import EditAvatarPopup from "./EditAvatarPopup.js";
 import AddPlacePopup from "./AddPlacePopup";
+import Login from "./Login";
+import Register from "./Register";
+// import ProtectedRoute from "./ProtectedRoute";
+// import InfoTooltip from "./InfoTooltip";
 
 function App() {
   const [currentUser, setCurrentUser] = useState({});
@@ -163,8 +167,12 @@ function App() {
       <div className="App">
         <div className="page">
           <Switch>
-            <Route path="/sign-up" />
-            <Route path="/sign-in" />
+            <Route path="/sign-up">
+              <Login />
+            </Route>
+            <Route path="/sign-in">
+              <Register />
+            </Route>
           </Switch>
 
           <Header />

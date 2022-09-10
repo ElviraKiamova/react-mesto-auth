@@ -15,7 +15,6 @@
   -moz-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
   background-size: cover;
-  box-sizing: border-box;
 }
 
 @media (max-width: 320px) {

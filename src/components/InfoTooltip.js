@@ -1,14 +1,27 @@
+import React from "react";
 
-function InfoTooltip({ isOpen, onClose, onCloseClick, title, imgStatus }) {
+const InfoToolTip = ({ isOpen, onClose, isRegistered }) => {
   return (
-    <div className={`popup ${isOpen ? 'popup_opened' : ''}`} onClick={onCloseClick}>
-      <div className="popup__info">
-        <img className="popup__status" src={imgStatus} alt={title}/>
-        <h2 className="popup__message">{title}</h2>
-        <button className="popup__button-cross" type="button" aria-label="Закрыть" onClick={onClose}/>
+    <>
+      <div className={`popup ${isOpen && "popup_opened"}`}>
+        <div className="popup__container">
+          <div
+            className={isRegistered ? "popup__success" : "popup__unsuccess"}
+          />
+          <h3 className="popup__title popup__title_registration">
+            {isRegistered
+              ? "Вы успешно зарегистрировались!"
+              : "Что-то пошло не так! Попробуйте ещё раз."}
+          </h3>
+          <button
+            className="popup__button-cross"
+            onClick={onClose}
+            type="button"
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
-}
+};
 
-export default InfoTooltip;
+export default InfoToolTip;

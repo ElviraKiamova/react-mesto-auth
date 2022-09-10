@@ -44,8 +44,7 @@ function Main(props) {
       </section>
 
       <section className="elements page__elements">
-        {cards.length &&
-          cards.map((card) => (
+        {cards.map((card) => (
             <Card
               card={card}
               key={card._id}

@@ -18,7 +18,7 @@ function EditAvatarPopup({
   }
 
   React.useEffect(() => {
-    ref.current.value = "спасибо за работу и за заботу)))";
+    ref.current.value = "";
   }, [isOpen]);
 
   return (

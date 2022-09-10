@@ -25,6 +25,20 @@ function App() {
   const [selectedCard, setSelectedCard] = useState(null);
   const [isSelectedCard, setIsSelectedCard] = useState(false);
   const [cards, setCards] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  React.useEffect(() => {
+    if(loggedIn) {
+      api.getInitialCards()
+        .then((res => {
+            setCards(res);
+        }))
+
+        .catch((err) => {
+            console.log(err);
+        });
+    }
+}, [loggedIn]);
 
 
   const searchUserApiResult = () => {
@@ -37,9 +51,7 @@ function App() {
         console.log(err);
       });
   };
-  useEffect(() => {
-    searchUserApiResult();
-  }, []);
+
 
   function handleUpdateUser(data) {
     api
@@ -64,6 +76,7 @@ function App() {
         console.error(err);
       });
   }
+
 
   function handleAddPlaceSubmit(data) {
     api
@@ -152,7 +165,6 @@ function App() {
   }
 
   const history = useHistory();
-  const [loggedIn, setLoggedIn] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
   const [email, setEmail] = useState("");
   const [isInfoToolTipOpen, setIsInfoToolTipOpen] = useState(false);
@@ -162,9 +174,10 @@ function App() {
     auth
       .register({ email, password })
       .then(() => {
-        setIsRegistered(true);
         setIsInfoToolTipOpen(true);
+        setIsRegistered(true);
         history.push("/sign-in");
+        
       })
       .catch((err) => {
         setIsRegistered(false);
@@ -174,24 +187,30 @@ function App() {
   }
 
   // Вход
-  const handleLogin = ({ email, password }) => {
+  const handleLogin = (data) => {
     auth
-      .authorize({ email, password })
+      .authorize(data)
       .then((res) => {
-        localStorage.setItem("jwt", res.token);
-        setLoggedIn(true);
-        setEmail(email);
-        history.push("/");
+        if(res.token) {
+          localStorage.setItem("jwt", res.token);
+          setLoggedIn(true);
+          setEmail(data.email);
+          history.push("/");
+        } 
       })
       .catch((err) => {
-        setIsInfoToolTipOpen(true);
-        setIsRegistered(false);
         console.log(err);
-      });
+    });
   };
 
-  // Проверить токен
-  const handleTokenCheck = (jwt) => {
+
+  function handleLogout() {
+    localStorage.removeItem('jwt');
+    setLoggedIn(false);
+}
+
+    // Проверить токен
+    const handleTokenCheck = (jwt) => {
       auth
         .checkToken(jwt)
         .then((res) => {
@@ -203,35 +222,28 @@ function App() {
         })
         .catch((err) => console.log(err));
   };
-
-  React.useEffect(() => {
-    api.getInitialCards()
-        .then((res => {
-            setCards(res);
-        }))
-
-        .catch((err) => {
-            console.log(err);
-        });
-}, []);
-
-  const handleSignOut = () => {
-    localStorage.removeItem("jwt");
-    setLoggedIn(false);
-  };
-
+  
   React.useEffect(() => {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
       handleTokenCheck(jwt);
     }
-  },[]);
+  },[history, handleLogin]);
+
+
+useEffect(() => {
+  if(loggedIn) {
+    searchUserApiResult();
+  }
+}, [loggedIn]);
+
+
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="App">
         <div className="page">
-          <Header email={email} onSignOut={handleSignOut} />
+          <Header email={email} handleSignOut={handleLogout} />
 
           <Switch>
             <Route path="/sign-in">

@@ -4,9 +4,9 @@ import { Route } from "react-router-dom";
 import { Switch } from "react-router-dom";
 import logo from "../images/Vector.svg";
 
-function Header({ email, onSignOut, loggedIn }) {
+function Header({ email, handleSignOut, loggedIn }) {
   const [clicked, setClicked] = useState(false);
-
+  // console.log(onSignOut);
   function handlerClass() {
     if (clicked) {
       setClicked(false);
@@ -15,10 +15,6 @@ function Header({ email, onSignOut, loggedIn }) {
     }
   }
 
-  function handleSignOut() {
-    setClicked(false);
-    onSignOut();
-  }
 
   return (
     <header className="header">

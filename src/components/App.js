@@ -174,8 +174,8 @@ function App() {
     auth
       .register({ email, password })
       .then(() => {
-        setIsInfoToolTipOpen(true);
         setIsRegistered(true);
+        setIsInfoToolTipOpen(true);
         history.push("/sign-in");
         
       })
@@ -228,7 +228,7 @@ function App() {
     if (jwt) {
       handleTokenCheck(jwt);
     }
-  },[history, handleLogin]);
+  },[]);
 
 
 useEffect(() => {

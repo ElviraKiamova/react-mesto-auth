@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+
 import React, { useState, useEffect } from "react";
 import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import api from "../utils/Api";
@@ -11,11 +11,11 @@ import ImagePopup from "./ImagePopup.js";
 import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 import EditProfilePopup from "./EditProfilePopup.js";
 import EditAvatarPopup from "./EditAvatarPopup.js";
-import AddPlacePopup from "./AddPlacePopup";
-import Login from "./Login";
-import Register from "./Register";
-import InfoToolTip from "./InfoToolTip";
-import ProtectedRoute from "./ProtectedRoute";
+import AddPlacePopup from "./AddPlacePopup.js";
+import Login from "./Login.js";
+import Register from "./Register.js";
+import InfoToolTip from "../components/InfoToolTip.js";
+import ProtectedRoute from "./ProtectedRoute.js";
 
 function App() {
   const [currentUser, setCurrentUser] = useState({});

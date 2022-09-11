@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import api from "../utils/Api";
 import * as auth from "../utils/auth";
@@ -200,8 +200,9 @@ function App() {
   
 
     // Проверить токен
-    const handleTokenCheck = (jwt) => {
-      auth
+    const handleTokenCheck = useCallback(
+      (jwt) => {
+        auth
         .checkToken(jwt)
         .then((res) => {
           setEmail(res.data.email);
@@ -211,14 +212,17 @@ function App() {
           }
         })
         .catch((err) => console.log(err));
-  };
+      },
+      [history],
+    );
+
   
   React.useEffect(() => {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
       handleTokenCheck(jwt);
     }
-  },[]);
+  },[handleTokenCheck]);
 
   
 useEffect(() => {

@@ -1,6 +1,7 @@
   .header__login-button_logged-in {
         color: #A9A9A9;
         text-decoration: none
+        
   }
 
 .header__login-button_logged-in:hover {

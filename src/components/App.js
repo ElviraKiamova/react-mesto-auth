@@ -27,19 +27,6 @@ function App() {
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
 
-  React.useEffect(() => {
-    if(loggedIn) {
-      api.getInitialCards()
-        .then((res => {
-            setCards(res);
-        }))
-
-        .catch((err) => {
-            console.log(err);
-        });
-    }
-}, [loggedIn]);
-
 
   const searchUserApiResult = () => {
     api
@@ -173,15 +160,17 @@ function App() {
   function handleRegister({ email, password }) {
     auth
       .register({ email, password })
-      .then(() => {
-        setIsRegistered(true);
-        setIsInfoToolTipOpen(true);
-        history.push("/sign-in");
-        
-      })
-      .catch((err) => {
+      .then((res) => {
+        if (res.data) {
+          setIsRegistered(true);
+          setIsInfoToolTipOpen(true);
+          history.push("/sign-in");
+      } else {
         setIsRegistered(false);
         setIsInfoToolTipOpen(true);
+      }
+      })
+      .catch((err) => {
         console.log(err);
       });
   }
@@ -191,30 +180,31 @@ function App() {
     auth
       .authorize(data)
       .then((res) => {
-        if(res.token) {
+        if (res.token) {
           localStorage.setItem("jwt", res.token);
           setLoggedIn(true);
           setEmail(data.email);
           history.push("/");
-        } 
-      })
+          
+      } else {
+        setIsRegistered(false);
+        setIsInfoToolTipOpen(true);
+      }
+  })
       .catch((err) => {
         console.log(err);
     });
   };
 
 
-  function handleLogout() {
-    localStorage.removeItem('jwt');
-    setLoggedIn(false);
-}
+  
 
     // Проверить токен
     const handleTokenCheck = (jwt) => {
       auth
         .checkToken(jwt)
         .then((res) => {
-          setEmail(res.email);
+          setEmail(res.data.email);
           if (res) {
             setLoggedIn(true);
             history.push("/");
@@ -228,14 +218,34 @@ function App() {
     if (jwt) {
       handleTokenCheck(jwt);
     }
-  },[]);
+  });
 
 
 useEffect(() => {
-  if(loggedIn) {
     searchUserApiResult();
+}, []);
+
+
+React.useEffect(() => {
+  if(loggedIn) {
+    api.getInitialCards()
+      .then((res => {
+          setCards(res);
+      }))
+
+      .catch((err) => {
+          console.log(err);
+      });
   }
 }, [loggedIn]);
+
+function handleLogout() {
+  localStorage.removeItem('jwt');
+  setEmail('');
+  setCurrentUser({});
+  setCards([]);
+  setLoggedIn(false);
+}
 
 
 
@@ -243,7 +253,7 @@ useEffect(() => {
     <CurrentUserContext.Provider value={currentUser}>
       <div className="App">
         <div className="page">
-          <Header email={email} handleSignOut={handleLogout} />
+        <Header email={email} onSignOut={handleLogout} />
 
           <Switch>
             <Route path="/sign-in">
@@ -285,40 +295,15 @@ useEffect(() => {
           <EditAvatarPopup
             isOpen={isEditAvatarPopupOpen}
             onClose={closeAllPopups}
-            onUpdateAvatar={handleAvatarUpdate}
-          />
-          <EditProfilePopup
-            isOpen={isEditProfilePopupOpen}
-            onClose={closeAllPopups}
-            onUpdateUser={handleUpdateUser}
-          />
-          <AddPlacePopup
-            isOpen={isAddPlacePopupOpen}
-            onClose={closeAllPopups}
-            onAddPlace={handleAddPlaceSubmit}
-          />
-          <ImagePopup card={selectedCard} onClose={closeAllPopups} />
-
-          <ImagePopup
-            isOpen={isSelectedCard}
-            onClose={closeAllPopups}
-            name="big-picture"
-            card={selectedCard}
+            onSubmit={handleAvatarUpdate}
+            buttonText="Сохранить"
             onCloseClick={handlePopupCloseClick}
-          />
+          />  
 
-          <EditProfilePopup
+         <EditProfilePopup
             isOpen={isEditProfilePopupOpen}
             onClose={closeAllPopups}
             onSubmit={handleUpdateUser}
-            buttonText="Сохранить"
-            onCloseClick={handlePopupCloseClick}
-          />
-
-          <EditAvatarPopup
-            isOpen={isEditAvatarPopupOpen}
-            onClose={closeAllPopups}
-            onSubmit={handleAvatarUpdate}
             buttonText="Сохранить"
             onCloseClick={handlePopupCloseClick}
           />
@@ -328,6 +313,15 @@ useEffect(() => {
             onClose={closeAllPopups}
             onSubmit={handleAddPlaceSubmit}
             buttonText="Сохранить"
+            onCloseClick={handlePopupCloseClick}
+          />
+
+
+          <ImagePopup
+            isOpen={isSelectedCard}
+            onClose={closeAllPopups}
+            name="big-picture"
+            card={selectedCard}
             onCloseClick={handlePopupCloseClick}
           />
 

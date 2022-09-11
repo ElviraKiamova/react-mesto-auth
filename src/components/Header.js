@@ -4,15 +4,20 @@ import { Route } from "react-router-dom";
 import { Switch } from "react-router-dom";
 import logo from "../images/Vector.svg";
 
-function Header({ email, handleSignOut, loggedIn }) {
+function Header({ email, onSignOut, loggedIn }) {
   const [clicked, setClicked] = useState(false);
-  // console.log(onSignOut);
+
   function handlerClass() {
     if (clicked) {
       setClicked(false);
     } else {
       setClicked(true);
     }
+  }
+
+  function handleSignOut() {
+    setClicked(false);
+    onSignOut();
   }
 
 
@@ -70,7 +75,7 @@ function Header({ email, handleSignOut, loggedIn }) {
               </h3>
               <Link
                 to="/"
-                className="header__logout-button header__login-button_logged-in"
+                className="header__login-button header__login-button_logged-in"
                 onClick={handleSignOut}
               >
                 Выйти

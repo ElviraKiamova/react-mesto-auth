@@ -218,12 +218,12 @@ function App() {
     if (jwt) {
       handleTokenCheck(jwt);
     }
-  });
+  },[]);
 
-
+  
 useEffect(() => {
     searchUserApiResult();
-}, []);
+},[loggedIn]);
 
 
 React.useEffect(() => {
